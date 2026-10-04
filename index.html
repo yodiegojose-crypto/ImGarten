@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#176b3a">
+<title>Jardinería Diego</title>
+<style>
+:root{--green:#176b3a;--light:#f6f2e8;--card:#fffdf8;--muted:#657064}
+*{box-sizing:border-box}body{margin:0;background:#e9e4d8;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#18231b}
+.app{max-width:430px;min-height:100vh;margin:auto;background:var(--light);overflow:hidden}
+header{padding:18px 20px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:Georgia,serif;font-size:25px;color:var(--green);font-weight:700}
+main{padding:0 18px 90px}.hero{height:360px;border-radius:24px;background:linear-gradient(180deg,#9acb8a,#376b3f 70%,#244a2c);padding:28px 22px;display:flex;flex-direction:column;justify-content:flex-end;color:white;position:relative;overflow:hidden}
+.hero:before{content:"🌿";position:absolute;font-size:180px;right:-20px;top:-20px;opacity:.18}.hero h1{font-family:Georgia,serif;font-size:34px;line-height:1.05;margin:0 0 10px}.hero p{margin:0 0 18px}
+button{border:0;border-radius:16px;padding:15px 18px;font-size:16px;font-weight:700;cursor:pointer}.primary{background:var(--green);color:white}.secondary{background:transparent;color:white;border:1px solid white;margin-top:10px}
+.trust{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:#fffaf0;border-radius:18px;padding:15px;margin-top:-34px;position:relative;margin-left:18px;margin-right:18px;text-align:center}.trust span{font-size:13px;color:#39453b}
+.section-title{font-size:22px;margin:28px 0 12px}.service{background:var(--card);border-radius:18px;padding:13px;display:flex;gap:12px;align-items:center;margin:10px 0;box-shadow:0 2px 10px #00000008}.service .pic{width:64px;height:64px;border-radius:14px;background:#b9d29e;display:grid;place-items:center;font-size:30px}.service b{display:block;margin-bottom:4px}.service small{color:var(--muted)}
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(430px,100%);background:#fffdf8;border-top:1px solid #ddd6c8;display:grid;grid-template-columns:repeat(4,1fr);padding:10px 8px 12px;z-index:5}nav button{padding:7px 3px;background:none;color:#6b746c;font-size:12px}nav button.active{color:var(--green)}
+.screen{display:none}.screen.active{display:block}
+.form-card{background:var(--card);border-radius:20px;padding:18px;margin:12px 0}label{display:block;font-weight:700;margin:14px 0 7px}textarea,input,select{width:100%;border:1px solid #ddd6c8;border-radius:13px;padding:13px;font:inherit;background:white} .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.choice{padding:14px;border:1px solid #ddd6c8;border-radius:14px;background:white;text-align:center}.choice.selected{border:2px solid var(--green);background:#eef7e9}.back{background:none;padding:0;color:var(--green);font-size:15px}
+.success{text-align:center;padding:60px 20px}.check{width:80px;height:80px;border-radius:50%;background:#dcefd4;color:var(--green);display:grid;place-items:center;font-size:42px;margin:auto}
+.dashboard-head{background:var(--green);color:white;border-radius:22px;padding:22px;margin-bottom:16px}
+.dashboard-head h2{margin:0 0 6px;font-family:Georgia,serif;font-size:28px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:12px 0}
+.stat{background:var(--card);border-radius:18px;padding:17px}.stat b{font-size:27px;color:var(--green);display:block}.stat small{color:var(--muted)}
+.order{background:var(--card);border-radius:18px;padding:15px;margin:10px 0;display:flex;justify-content:space-between;gap:12px}
+.badge{display:inline-block;background:#fff0b8;color:#765900;border-radius:20px;padding:5px 9px;font-size:12px;font-weight:700}
+.action-row{display:flex;gap:8px;margin-top:10px}.action-row button{padding:9px 11px;font-size:13px}
+
+</head>
+<body>
+<div class="app">
+<header><div class="logo">Jardinería Diego</div><div>🔔</div></header>
+
+<main>
+<section id="home" class="screen active">
+<div class="hero"><h1>Tu jardín<br>en buenas manos</h1><p>Diseño · Mantenimiento · Poda · Limpieza · Plantación</p><button class="primary" onclick="show('quote')">Pedir presupuesto →</button><button class="secondary" onclick="show('services')">Ver servicios</button></div>
+<div class="trust"><span>🌿<br>Profesional</span><span>✓<br>Confiable</span><span>♻️<br>Responsable</span></div>
+<button class="primary" style="width:100%;margin-top:16px" onclick="show('dashboard')">🌿 Abrir panel del jardinero</button><h2 class="section-title">Servicios destacados</h2>
+<div id="homeServices"></div>
+</section>
+
+<section id="services" class="screen"><button class="back" onclick="show('home')">← Inicio</button><h2 class="section-title">Nuestros servicios</h2><div id="servicesList"></div></section>
+
+<section id="quote" class="screen"><button class="back" onclick="show('services')">← Servicios</button><h2 class="section-title">Pedir presupuesto</h2>
+<div class="form-card"><label>¿Qué servicio necesitas?</label><div class="grid" id="choices"></div>
+<label>Cuéntanos qué necesitas</label><textarea id="details" rows="4" placeholder="Ej.: jardín de 80 m², poda de setos y limpieza..."></textarea>
+<label>Fecha preferida</label><input id="date" type="date">
+<label>Fotos del jardín</label><input id="photos" type="file" accept="image/*" multiple>
+<label>Zona</label><input id="location" placeholder="Palma, Calvià, Andratx...">
+<button class="primary" style="width:100%;margin-top:18px" onclick="submitQuote()">Enviar solicitud →</button></div>
+</section>
+
+<section id="success" class="screen"><div class="success"><div class="check">✓</div><h2>¡Solicitud enviada!</h2><p>Gracias. Revisaremos los detalles y prepararemos tu presupuesto.</p><button class="primary" onclick="show('home')">Volver al inicio</button></div></section>
+
+<section id="orders" class="screen"><h2 class="section-title">Mis pedidos</h2><div class="form-card"><b>Tu solicitud aparecerá aquí.</b><p style="color:var(--muted)">En la siguiente versión añadiremos seguimiento, mensajes y estado del presupuesto.</p></div></section>
+<section id="profile" class="screen"><h2 class="section-title">Perfil</h2><div class="form-card"><b>Cliente</b><p style="color:var(--muted)">La cuenta y los datos de contacto se añadirán en la próxima etapa.</p></div></section>
+
+<section id="dashboard" class="screen">
+<button class="back" onclick="show('home')">← App cliente</button>
+<div class="dashboard-head"><h2>Hola, Diego 👋</h2><div>Tu panel de jardinería</div></div>
+<div class="stats">
+  <div class="stat"><b>3</b><small>Nuevos pedidos</small></div>
+  <div class="stat"><b>5</b><small>Servicios esta semana</small></div>
+  <div class="stat"><b>€1.240</b><small>Facturación del mes</small></div>
+  <div class="stat"><b>4,9 ★</b><small>Valoración media</small></div>
+</div>
+<h2 class="section-title">Pedidos recientes</h2>
+<div class="order"><div><b>🌿 Mantenimiento de jardín</b><br><small>Palma · 12 octubre</small><div class="action-row"><button class="primary">Ver pedido</button><button class="secondary" style="color:var(--green);border-color:var(--green)">Responder</button></div></div><span class="badge">Pendiente</span></div>
+<div class="order"><div><b>✂️ Poda de setos</b><br><small>Calvià · 15 octubre</small></div><span class="badge" style="background:#dcefd4;color:var(--green)">Confirmado</span></div>
+<h2 class="section-title">Accesos rápidos</h2>
+<div class="grid">
+<button class="choice">📅<br>Agenda</button>
+<button class="choice">👥<br>Clientes</button>
+<button class="choice">💶<br>Presupuestos</button>
+<button class="choice">📊<br>Facturación</button>
+</div>
+</section>
+</main>
+
+<nav><button class="active" data-screen="home">⌂<br>Inicio</button><button data-screen="services">🌿<br>Servicios</button><button data-screen="orders">▣<br>Mis pedidos</button><button data-screen="profile">♙<br>Perfil</button></nav>
+</div>
+
+<script>
+const services=[
+["🌳","Mantenimiento de jardines","Cuidado regular para mantener el jardín bonito"],
+["✂️","Poda de árboles y setos","Poda segura y profesional"],
+["🌱","Césped","Corte, cuidado y resiembra"],
+["🌸","Plantación","Árboles, plantas, flores y huertos"],
+["🧹","Limpieza de jardines","Hojas, maleza y residuos"],
+["📐","Diseño de jardines","Diseño personalizado para tu espacio"]
+];
+const list=document.getElementById("servicesList"), home=document.getElementById("homeServices"), choices=document.getElementById("choices");
+function card(s){return `<div class="service"><div class="pic">${s[0]}</div><div><b>${s[1]}</b><small>${s[2]}</small></div></div>`}
+list.innerHTML=services.map(card).join(""); home.innerHTML=services.slice(0,3).map(card).join("");
+choices.innerHTML=services.map((s,i)=>`<button class="choice" data-i="${i}" onclick="selectChoice(this)">${s[0]}<br><small>${s[1]}</small></button>`).join("");
+let selected=-1;
+function selectChoice(el){document.querySelectorAll(".choice").forEach(x=>x.classList.remove("selected"));el.classList.add("selected");selected=+el.dataset.i}
+function show(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x.dataset.screen===id))}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>show(b.dataset.screen));
+function submitQuote(){
+ if(selected<0){alert("Escolhe primeiro um serviço.");return}
+ if(!document.getElementById("location").value.trim()){alert("Indica a zona do serviço.");return}
+ show("success")
+}
+</script>
+</body></html>
